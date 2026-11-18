@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>asnscope: who routes Africa's internet</title>
+<meta name="description" content="Look up any autonomous system, IP or prefix: what it announces, who it connects to, and how. Built for exploring African networks, works for any AS. Data from RIPEstat.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='4' fill='%23E4572E'/%3E%3Ccircle cx='2' cy='4' r='1.6' fill='%2317808A'/%3E%3Ccircle cx='2' cy='12' r='1.6' fill='%2317808A'/%3E%3Ccircle cx='14' cy='8' r='1.6' fill='%23C68A12'/%3E%3C/svg%3E">
+</head>
+<body>
+<header class="top">
+  <a href="./" class="brand">asnscope</a>
+  <form id="search" role="search">
+    <label for="q" class="vh">AS number, IP address or prefix</label>
+    <input id="q" name="q" placeholder="AS29465, 102.89.4.10, 41.58.0.0/16" autocomplete="off" spellcheck="false">
+    <button type="submit">Look up</button>
+  </form>
+</header>
+
+<main id="main">
+  <section id="intro" class="intro">
+    <h1>Who carries the traffic?</h1>
+    <p>Every network on the internet is an autonomous system with a number. Type one in, or an IP address, to see what it announces to the world and which networks sit on either side of it in BGP.</p>
+    <p class="picks-label">Some networks worth a look</p>
+    <ul class="picks" id="picks"></ul>
+  </section>
+
+  <section id="result" hidden>
+    <div class="hero">
+      <div class="asn" id="r-asn"></div>
+      <div class="holder" id="r-holder"></div>
+      <p class="summary" id="r-summary"></p>
+    </div>
+
+    <figure class="map-wrap">
+      <svg id="map" viewBox="0 0 900 420" role="img" aria-labelledby="map-cap"></svg>
+      <figcaption id="map-cap">
+        <span class="key key-left"></span> seen between this network and the route collectors: its transit providers and peers
+        <span class="key key-right"></span> seen behind it: networks it carries, usually customers.
+        Line thickness is how many routes go through that link.
+      </figcaption>
+    </figure>
+
+    <div class="cols">
+      <section>
+        <h2>Neighbours <span class="count" id="n-count"></span></h2>
+        <table class="list" id="n-table">
+          <thead><tr><th>AS</th><th>Name</th><th>Side</th><th class="num">Routes</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+      <section>
+        <h2>Prefixes <span class="count" id="p-count"></span></h2>
+        <div class="sizes" id="p-sizes"></div>
+        <div class="tabs" role="tablist">
+          <button role="tab" aria-selected="true" data-fam="v4">IPv4</button>
+          <button role="tab" aria-selected="false" data-fam="v6">IPv6</button>
+        </div>
+        <ul class="prefixes" id="p-list"></ul>
+      </section>
+    </div>
+  </section>
+
+  <p id="status" class="status" role="status"></p>
+</main>
+
+<footer class="foot">
+  Routing data from <a href="https://stat.ripe.net">RIPEstat</a> (RIPE NCC), fetched live by your browser.
+  <a href="https://github.com/GreatsLab/asnscope">Source</a>
+</footer>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
