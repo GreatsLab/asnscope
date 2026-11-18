@@ -1,0 +1,12 @@
+{
+  "name": "asnscope",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "ASN, prefix and peering explorer on RIPEstat data",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "serve": "python3 -m http.server 8000"
+  },
+  "license": "MIT"
+}
