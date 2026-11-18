@@ -99,8 +99,8 @@ export function peeringLayout(neighbours, { width = 900, height = 420, max = 14 
   const arc = (list, side) => list.map((n, i) => {
     const k = list.length === 1 ? 0.5 : i / (list.length - 1);
     const a = (-60 + k * 120) * Math.PI / 180;          // -60deg .. +60deg
-    // leave ~170px each side for the AS number + holder label
-    const r = Math.min(cx - 170, height * 0.9);
+    // leave room each side for the AS number + holder label
+    const r = Math.min(cx - Math.max(110, width * 0.19), height * 0.9);
     return {
       ...n,
       x: cx + side * Math.cos(a) * r,

@@ -120,11 +120,18 @@ function el(tag, attrs, parent) {
 }
 
 function drawMap(asn, ns, names) {
+  lastMap = [asn, ns, names];
   const svg = $("#map");
   svg.innerHTML = "";
-  const L = peeringLayout(ns);
+  // a 900-wide drawing squeezed onto a phone makes 6px text. On narrow
+  // screens draw a smaller canvas with fewer neighbours instead.
+  const narrow = svg.parentElement.clientWidth < 620;
+  const W = narrow ? 560 : 900, H = narrow ? 520 : 420;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.classList.toggle("narrow", narrow);
+  const L = peeringLayout(ns, { width: W, height: H, max: narrow ? 6 : 14 });
   if (!ns.length) {
-    el("text", { x: 450, y: 210, "text-anchor": "middle", class: "empty" }, svg).textContent = "No neighbours seen.";
+    el("text", { x: W / 2, y: H / 2, "text-anchor": "middle", class: "empty" }, svg).textContent = "No neighbours seen.";
     return;
   }
   for (const n of L.nodes) {
@@ -145,10 +152,10 @@ function drawMap(asn, ns, names) {
     g.addEventListener("keydown", (e) => { if (e.key === "Enter") lookup(n.asn); });
   }
   const c = el("g", { class: "centre" }, svg);
-  el("circle", { cx: L.cx, cy: L.cy, r: 58 }, c);
+  el("circle", { cx: L.cx, cy: L.cy, r: narrow ? 64 : 58 }, c);
   el("text", { x: L.cx, y: L.cy + 7, "text-anchor": "middle" }, c).textContent = asn;
-  if (L.hiddenLeft) el("text", { x: 20, y: 410, class: "more" }, svg).textContent = `+${L.hiddenLeft} more on this side`;
-  if (L.hiddenRight) el("text", { x: 880, y: 410, class: "more", "text-anchor": "end" }, svg).textContent = `+${L.hiddenRight} more on this side`;
+  if (L.hiddenLeft) el("text", { x: 12, y: H - 8, class: "more" }, svg).textContent = `+${L.hiddenLeft} more`;
+  if (L.hiddenRight) el("text", { x: W - 12, y: H - 8, class: "more", "text-anchor": "end" }, svg).textContent = `+${L.hiddenRight} more`;
 }
 
 function renderNeighbours(ns, names) {
@@ -194,6 +201,12 @@ document.addEventListener("click", (e) => {
 document.querySelector(".tabs").addEventListener("click", (e) => {
   const b = e.target.closest("button[data-fam]");
   if (b && famState) showFamily(b.dataset.fam);
+});
+let lastMap = null;
+let resizeT;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeT);
+  resizeT = setTimeout(() => lastMap && drawMap(...lastMap), 150);
 });
 $("#search").addEventListener("submit", (e) => { e.preventDefault(); lookup($("#q").value); });
 window.addEventListener("popstate", () => {
